@@ -1,4 +1,5 @@
 'use client';
+import { NotificationProps } from '@/components/notification';
 import { createContext, useState, FunctionComponent, ReactNode } from 'react';
 
 export interface Book {
@@ -22,6 +23,10 @@ interface BooksContextData {
 	loading: boolean;
 	selectedBook?: Book;
 	setSelectedBook: (book: Book) => void;
+	myShelf: Book[];
+	addToShelf: (book: Book) => void;
+	notification: NotificationProps;
+	removeFromShelf: (book: Book) => void;
 }
 
 interface BooksProviderProps {
@@ -32,8 +37,14 @@ export const BooksContext = createContext<BooksContextData | undefined>(undefine
 
 export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
 	const [results, setResults] = useState<Book[]>([]);
+	const [myShelf, setMyShelf] = useState<Book[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [selectedBook, setSelectedBook] = useState<Book | undefined>(undefined);
+	const [notification, setNotification] = useState<NotificationProps>({
+		title: '',
+		message: '',
+		showNotification: false,
+	});
 
 	const searchBooks = async (query: string) => {
 		setLoading(true);
@@ -49,8 +60,57 @@ export const BooksProvider: React.FC<BooksProviderProps> = ({ children }) => {
 		}
 	};
 
+	const addToShelf = (book: Book) => {
+		const isDuplicate = myShelf.some((item) => item.id === book.id);
+		if (isDuplicate) {
+			setNotification({
+				title: 'Oops! Ocorreu um erro',
+				message: 'Este livro já está na sua estante. Adicione outro livro.',
+				showNotification: true,
+			});
+			setTimeout(() => {
+				setNotification({ title: '', message: '', showNotification: false });
+			}, 2500);
+			return;
+		}
+		setMyShelf((previousBooks) => [...previousBooks, book]);
+		setNotification({
+			title: 'Sucesso!',
+			message: 'Livro adicionado com sucesso na sua estante.',
+			showNotification: true,
+		});
+		setTimeout(() => {
+			setNotification({ title: '', message: '', showNotification: false });
+		}, 2500);
+		return;
+	};
+
+	const removeFromShelf = (book: Book) => {
+		setMyShelf((previousBooks) => previousBooks.filter((item) => item.id !== book.id));
+		setNotification({
+			title: 'Sucesso!',
+			message: 'O livro foi removido com sucesso da sua estante.',
+			showNotification: true,
+		});
+		setTimeout(() => {
+			setNotification({ title: '', message: '', showNotification: false });
+		}, 2500);
+	};
+
 	return (
-		<BooksContext.Provider value={{ results, searchBooks, loading, selectedBook, setSelectedBook }}>
+		<BooksContext.Provider
+			value={{
+				results,
+				searchBooks,
+				loading,
+				selectedBook,
+				setSelectedBook,
+				myShelf,
+				addToShelf,
+				notification,
+				removeFromShelf,
+			}}
+		>
 			{children}
 		</BooksContext.Provider>
 	);

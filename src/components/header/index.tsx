@@ -10,15 +10,15 @@ export default function Header() {
 				<Link href='/'>
 					<Image src={logo} alt='logo buscante' className='hover:opacity-50 cursor-pointer' />
 				</Link>
-				{/* <nav className='flex items-center'>
+				<nav className='flex items-center'>
 					<div>
-						<Link href='/about'>
+						<Link href='/my-shelf'>
 							<p className='text-white hover:opacity-50 mx-2 cursor-pointer text-lg font-normal'>
 								Minha estante
 							</p>
 						</Link>
 					</div>
-				</nav> */}
+				</nav>
 			</div>
 		</header>
 	);

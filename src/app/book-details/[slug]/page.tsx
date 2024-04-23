@@ -5,6 +5,8 @@ import Image from 'next/image';
 import NotFound from '@/assets/images/not-found.webp';
 import BookCard from '@/components/book-card';
 import Link from 'next/link';
+import Button from '@/components/button';
+import Notification from '@/components/notification';
 
 export default function BookDetails() {
 	const context = useContext(BooksContext);
@@ -13,7 +15,7 @@ export default function BookDetails() {
 		throw new Error('useContext must be used within a BooksProvider');
 	}
 
-	const { selectedBook } = context;
+	const { selectedBook, addToShelf, notification } = context;
 
 	return (
 		<main className='flex-row h-full mx-4 md:mx-10 xl:mx-60'>
@@ -31,8 +33,14 @@ export default function BookDetails() {
 					{selectedBook?.volumeInfo.description && (
 						<p className='my-4'>{selectedBook?.volumeInfo.description}</p>
 					)}
+					<Button
+						onClick={() => addToShelf(selectedBook)}
+						title='Adicionar à estante'
+						variant='secondary'
+					/>
 				</>
 			)}
+			{notification.showNotification && <Notification {...notification} />}
 		</main>
 	);
 }

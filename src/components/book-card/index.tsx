@@ -9,9 +9,10 @@ import { useContext } from 'react';
 interface BookCardProps {
 	book: Book;
 	variant: 'small' | 'large';
+	isRemoveButton?: boolean;
 }
 
-const BookCard: React.FC<BookCardProps> = ({ book, variant = 'small' }) => {
+const BookCard: React.FC<BookCardProps> = ({ book, variant = 'small', isRemoveButton = false }) => {
 	const bookSize = {
 		width: variant === 'small' ? 178 : 206,
 		height: variant === 'small' ? 242 : 334,
@@ -23,7 +24,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, variant = 'small' }) => {
 		throw new Error('useContext must be used within a BooksProvider');
 	}
 
-	const { setSelectedBook } = context;
+	const { setSelectedBook, removeFromShelf } = context;
 
 	const onClick = () => {
 		setSelectedBook(book);
@@ -64,9 +65,17 @@ const BookCard: React.FC<BookCardProps> = ({ book, variant = 'small' }) => {
 				)}
 				{variant === 'small' && (
 					<div className='mt-4'>
-						<Link href={`/book-details/${encodeURIComponent(book.id)}`}>
-							<Button onClick={onClick} title='Mais detalhes' />
-						</Link>
+						{isRemoveButton ? (
+							<Button
+								onClick={() => removeFromShelf(book)}
+								title='Remover da estante'
+								variant='secondary'
+							/>
+						) : (
+							<Link href={`/book-details/${encodeURIComponent(book.id)}`}>
+								<Button onClick={onClick} title='Mais detalhes' />
+							</Link>
+						)}
 					</div>
 				)}
 			</div>

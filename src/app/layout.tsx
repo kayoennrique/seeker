@@ -7,7 +7,7 @@ import Script from 'next/script';
 
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '600'], style: 'normal' });
 export const metadata: Metadata = {
-	title: 'Seeker',
+	title: 'Buscante',
 	description: 'Sua estante virtual de livros',
 };
 
